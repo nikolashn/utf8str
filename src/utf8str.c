@@ -16,7 +16,7 @@ Str* StrNew() { return StrNewSetCap(INIT_CAP); }
 /* Creates and initializes a new Str, with initial capacity set by initCap.
  * Returns 0 if unable to create, otherwise a pointer to the Str */
 Str* StrNewSetCap(size_t initCap) {
-	Str* s = malloc(initCap);
+	Str* s = malloc(sizeof(*s));
 	if (!s) return 0;
 	s->length = 0;
 	s->size = 0;
