@@ -1,3 +1,6 @@
+/* Copyright (C) 2023 nikolashn */
+/* See LICENSE for copyright/license information */
+
 #ifndef __NIKOLASHN_UTF8STR_H
 #define __NIKOLASHN_UTF8STR_H
 

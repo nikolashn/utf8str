@@ -1,3 +1,6 @@
+/* Copyright (C) 2023 nikolashn */
+/* See LICENSE for copyright/license information */
+
 #include "utf8str.h"
 
 #include <stdint.h>
