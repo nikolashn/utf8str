@@ -23,7 +23,7 @@ MunitResult TestNew(const MunitParameter params[], void* data) {
 	StrDel(s);
 
 	/* initialized with an empty string */
-	s = StrNew("");
+	s = StrNew(0);
 	munit_assert_not_null(s);
 	munit_assert_size(s->length, ==, 0);
 	munit_assert_size(s->size, ==, 1);
@@ -71,7 +71,7 @@ MunitResult TestIsNull(const MunitParameter params[], void* data) {
 	munit_assert_false(StrIsNull(s));
 	StrDel(s);
 
-	s = StrNew("");
+	s = StrNew(0);
 	munit_assert_true(StrIsNull(s));
 	StrDel(s);
 
@@ -91,7 +91,7 @@ MunitResult TestLength(const MunitParameter params[], void* data) {
 	munit_assert_size(StrLength(s), ==, 9);
 	StrDel(s);
 
-	s = StrNew("");
+	s = StrNew(0);
 	munit_assert_size(StrLength(s), ==, 0);
 	StrDel(s);
 
@@ -265,7 +265,7 @@ MunitResult TestTake(const MunitParameter params[], void* data) {
 
 	StrDel(s);
 
-	s = StrNew("");
+	s = StrNew(0);
 
 	t = StrTake(s, 1);
 	munit_assert_true(!strcmp(s->arr, t->arr));
@@ -310,7 +310,7 @@ MunitResult TestDrop(const MunitParameter params[], void* data) {
 
 	StrDel(s);
 
-	s = StrNew("");
+	s = StrNew(0);
 
 	t = StrTake(s, 1);
 	munit_assert_true(!strcmp(s->arr, t->arr));
@@ -349,6 +349,63 @@ MunitResult TestTakeWhile(const MunitParameter params[], void* data) {
 	
 	t = StrTakeWhile(s, IsNotFourBytes);
 	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	StrDel(s);
+	s = StrNew(0);
+	
+	t = StrTakeWhile(s, IsAscii);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+	
+	t = StrTakeWhile(s, IsFourBytes);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+	
+	t = StrTakeWhile(s, IsNotFourBytes);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+
+	StrDel(s);
+
+	return MUNIT_OK;
+}
+
+MunitResult TestDropWhile(const MunitParameter params[], void* data) {
+	Str* s = StrNew("Hellô ẃöŗłd‼️");
+	Str* t;
+	
+	t = StrDropWhile(s, IsAscii);
+	munit_assert_true(!strcmp("ô ẃöŗłd‼️", t->arr));
+	munit_assert_size(t->length, ==, 8);
+	StrDel(t);
+	
+	t = StrDropWhile(s, IsFourBytes);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	munit_assert_size(t->length, ==, 12);
+	StrDel(t);
+	
+	t = StrDropWhile(s, IsNotFourBytes);
+	munit_assert_true(!strcmp("", t->arr));
+	munit_assert_size(t->length, ==, 0);
+	StrDel(t);
+
+	StrDel(s);
+	s = StrNew(0);
+	
+	t = StrDropWhile(s, IsAscii);
+	munit_assert_true(!strcmp("", t->arr));
+	munit_assert_size(t->length, ==, 0);
+	StrDel(t);
+	
+	t = StrDropWhile(s, IsFourBytes);
+	munit_assert_true(!strcmp("", t->arr));
+	munit_assert_size(t->length, ==, 0);
+	StrDel(t);
+	
+	t = StrDropWhile(s, IsNotFourBytes);
+	munit_assert_true(!strcmp("", t->arr));
+	munit_assert_size(t->length, ==, 0);
 	StrDel(t);
 
 	StrDel(s);

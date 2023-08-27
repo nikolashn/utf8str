@@ -234,6 +234,35 @@ Str* StrTakeWhile(const Str* s, int (*p)(unsigned int)) {
 	return t;
 }
 
+/* Create a new Str that returns the longest præfix of s such that for each
+ * Unicode character c in the præfix, p(c) != 0.
+ * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
+ * præfix. */
+Str* StrDropWhile(const Str* s, int (*p)(unsigned int)) {
+	Str* t = StrNew(0);
+	if (!t) return 0;
+
+	const char* cs = s->arr;
+	unsigned int c;
+	size_t length = 0;
+	while (cs < s->arr + s->size && (c = UTF8At(cs)) != -1 && p(c)) {
+		cs += UTF8Size(c);
+		++length;
+	}
+	if (cs >= s->arr + s->size) return t;
+	if (c == -1) return 0;
+
+	size_t size = s->arr + s->size - cs;
+	t = StrResize(t, size);
+	if (!t) return 0;
+
+	memcpy(t->arr, cs, size);
+	t->length = length;
+	t->size = size;
+
+	return t;
+}
+
 /* Prærequisites: c is a valid Unicode code point && c > 0.
  * Adds Unicode character c to the end of Str s.
  * Returns 1 on success, otherwise 0. */

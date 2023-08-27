@@ -33,13 +33,14 @@ Str* StrSlice(const Str* s, size_t first, size_t last);
 Str* StrTake(const Str* s, size_t n);
 Str* StrDrop(const Str* s, size_t n);
 Str* StrTakeWhile(const Str* s, int (*p)(unsigned int));
+Str* StrDropWhile(const Str* s, int (*p)(unsigned int));
 
 /* Mutating functions */
 int StrAddChar(Str* s, unsigned int c);
 int StrAddChars(Str* s, const char* cs);
 int StrAdd(Str* s, const Str* t);
 
-/* TODO: intersperse, dropWhile, contains, filter, elemIndex, delAt, replace,
- * break, toUpper, toLower, map, reverse, cmp, startsWith, endsWith */
+/* TODO: intersperse, contains, filter, elemIndex, delAt, replace, break,
+ * toUpper, toLower, map, reverse, cmp, startsWith, endsWith */
 
 #endif
