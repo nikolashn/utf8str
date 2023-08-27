@@ -209,6 +209,16 @@ Str* StrTake(const Str* s, size_t n) {
 	else return StrCopy(s);
 }
 
+/* Create a new Str: if n < StrLength(s), the postfix of s of length n;
+ * otherwise, an empty string.
+ * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
+ * postfix. */
+Str* StrDrop(const Str* s, size_t n) {
+	if (n < s->length) return StrSlice(s, n, s->length);
+	else return StrNew(0);
+}
+
+
 /* Prærequisites: c is a valid Unicode code point && c > 0.
  * Adds Unicode character c to the end of Str s.
  * Returns 1 on success, otherwise 0. */
