@@ -156,20 +156,20 @@ Str* StrCopy(const Str* s) {
 	return t;
 }
 
-/* Prærequisites: first <= last <= StrLength(s).
- * Attempt to create a new Str containing a slice of s from indices first to
+/* Attempt to create a new Str containing a slice of s from indices first to
  * last (not inclusive), i.e., the substring s[first..last).
  * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
  * slice. */
 Str* StrSlice(const Str* s, size_t first, size_t last) {
-	if (first > last || last > StrLength(s)) return 0;
 	Str* t = StrNewSetCap(INIT_CAP);
 	if (!t) return 0;
 	
 	const char* cs = s->arr;
 	unsigned int c;
 	size_t i;
-	for (i = 0; i < last; ++i) {
+	size_t end = (s->length < last) ? s->length : last;
+
+	for (i = 0; i < end; ++i) {
 		c = UTF8At(cs);
 		if (c == -1) return 0;
 		cs += UTF8Size(c);

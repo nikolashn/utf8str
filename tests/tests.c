@@ -219,15 +219,24 @@ MunitResult TestSlice(const MunitParameter params[], void* data) {
 	StrDel(t);
 
 	t = StrSlice(s, 4, 0);
-	munit_assert_null(t);
-	t = StrSlice(s, 55, 56);
-	munit_assert_null(t);
-	t = StrSlice(s, 56, 55);
-	munit_assert_null(t);
-	t = StrSlice(s, 0, 56);
-	munit_assert_null(t);
-	t = StrSlice(s, 56, 0);
-	munit_assert_null(t);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+
+	t = StrSlice(s, 55, 99);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+
+	t = StrSlice(s, 99, 55);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+
+	t = StrSlice(s, 0, 99);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	t = StrSlice(s, 99, 0);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
 
 	StrDel(s);
 
