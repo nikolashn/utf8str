@@ -56,12 +56,14 @@ unsigned int UTF8Before(const char* cs) {
 	return UTF8At(cs);
 }
 
-/* Attempt to double the capacity of s.
+/* Repeatedly double the capacity of s until it is at least the target size.
  * If unable to do so, return 0. Otherwise return s. */
-Str* StrResize(Str* s) {
-	if (s->cap > SIZE_MAX/2)
-		return 0;
-	s->cap *= 2;
+Str* StrResize(Str* s, size_t size) {
+	if (s->cap >= size) return s;
+	while (s->cap < size) {
+		if (s->cap > SIZE_MAX/2) return 0;
+		s->cap *= 2;
+	}
 	s->arr = realloc(s->arr, s->cap);
 	return s;
 }
@@ -145,7 +147,7 @@ unsigned int StrLast(const Str* s) {
 	return c;
 }
 
-/* Attempt to create a copy of s and return it. 
+/* Create a copy of s and return it. 
  * Returns 0 if unsuccessful, otherwise a pointer to the copy of s. */
 Str* StrCopy(const Str* s) {
 	Str* t = StrNewSetCap(s->cap);
@@ -156,24 +158,43 @@ Str* StrCopy(const Str* s) {
 	return t;
 }
 
-/* Attempt to create a new Str containing a slice of s from indices first to
- * last (not inclusive), i.e., the substring s[first..last).
+/* Create a new Str containing a slice of s from indices first to last (not
+ * inclusive), i.e.:
+ *   if first <= last <= StrLength(s), the substring s[first..last);
+ *   otherwise, if first > last or first > StrLength(s), the empty string.
+ *   otherwise, the substring s[first..StrLength(s));
  * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
  * slice. */
 Str* StrSlice(const Str* s, size_t first, size_t last) {
-	Str* t = StrNewSetCap(INIT_CAP);
-	if (!t) return 0;
-	
+	Str* t = StrNew(0);
 	const char* cs = s->arr;
 	unsigned int c;
 	size_t i;
-	size_t end = (s->length < last) ? s->length : last;
 
-	for (i = 0; i < end; ++i) {
-		c = UTF8At(cs);
-		if (c == -1) return 0;
-		cs += UTF8Size(c);
-		if (i >= first) StrAddChar(t, c);
+	if (first <= last && last < s->length) {
+		if (!t) return 0;
+		
+		for (i = 0; i < last; ++i) {
+			c = UTF8At(cs);
+			if (c == -1) return 0;
+			cs += UTF8Size(c);
+			if (i >= first) StrAddChar(t, c);
+		}
+	}
+	else if (first <= last && first <= s->length) {
+		for (i = 0; i < first; ++i) {
+			c = UTF8At(cs);
+			if (c == -1) return 0;
+			cs += UTF8Size(c);
+		}
+
+		size_t size = s->arr + s->size - cs;
+		t = StrResize(t, size);
+		if (!t) return 0;
+
+		memcpy(t->arr, cs, size);
+		t->length = s->length - first;
+		t->size = size;
 	}
 	
 	return t;
@@ -185,11 +206,8 @@ Str* StrSlice(const Str* s, size_t first, size_t last) {
 int StrAddChar(Str* s, unsigned int c) {
 	const size_t charSize = UTF8Size(c);
 	if (!c || !charSize) return 0;
-
-	while (s->cap < s->size + charSize) {
-		Str* r = StrResize(s);
-		if (!r) return 0;
-	}
+	if (!StrResize(s, s->size + charSize))
+		return 0;
 
 	char* const end = &(s->arr[s->size-1]);
 
@@ -236,10 +254,8 @@ int StrAddChars(Str* s, const char* cs) {
 /* Adds the Str at t to the end of s.
  * Returns 1 on success, otherwise 0. */
 int StrAdd(Str* s, const Str* t) {
-	while (s->cap < s->size - 1 + t->size) {
-		Str* r = StrResize(s);
-		if (!r) return 0;
-	}
+	if (!StrResize(s, s->size - 1 + t->size))
+		return 0;
 
 	memcpy(&(s->arr[s->size-1]), t->arr, t->size);
 	s->length += t->length;
