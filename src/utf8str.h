@@ -18,23 +18,23 @@ struct Str {
 typedef struct Str Str;
 
 /* Creation and deletion */
-Str* StrNew();
+Str* StrNew(const char* cs);
 Str* StrNewSetCap(size_t initCap);
 void StrDel(Str* s);
 
 /* Non-mutating functions */
 int StrIsNull(const Str* s);
 size_t StrLength(const Str* s);
-Str* StrCopy(const Str* s);
 unsigned int StrAt(const Str* s, size_t index);
 unsigned int StrFirst(const Str* s);
 unsigned int StrLast(const Str* s);
+Str* StrCopy(const Str* s);
 Str* StrSlice(const Str* s, size_t first, size_t last);
 
 /* Mutating functions */
-void StrAppendChar(Str* s, unsigned int c);
-void StrAppendChars(Str* s, const char* cs);
-void StrAppend(Str* s, const Str* s1);
+int StrAddChar(Str* s, unsigned int c);
+int StrAddChars(Str* s, const char* cs);
+int StrAdd(Str* s, const Str* t);
 
 /* TODO: intersperse, take, drop, takeWhile, dropWhile, contains, filter,
  * elemIndex, delAt, replace, break, toUpper, toLower, map, reverse, cmp,
