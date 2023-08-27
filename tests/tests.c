@@ -283,6 +283,8 @@ MunitResult TestTake(const MunitParameter params[], void* data) {
 	munit_assert_true(!strcmp(s->arr, t->arr));
 	StrDel(t);
 
+	StrDel(s);
+
 	return MUNIT_OK;
 }
 
@@ -290,41 +292,66 @@ MunitResult TestDrop(const MunitParameter params[], void* data) {
 	Str* s = StrNew("🌶🐎😆😈😈😈");
 	Str* t;
 
-	t = StrDrop(s, 1);
-	munit_assert_true(!strcmp("🐎😆😈😈😈", t->arr));
+	t = StrTake(s, 1);
+	munit_assert_true(!strcmp("🌶", t->arr));
 	StrDel(t);
 
-	t = StrDrop(s, 4);
-	munit_assert_true(!strcmp("😈😈", t->arr));
+	t = StrTake(s, 4);
+	munit_assert_true(!strcmp("🌶🐎😆😈", t->arr));
 	StrDel(t);
 
-	t = StrDrop(s, 0);
-	munit_assert_true(!strcmp(s->arr, t->arr));
-	StrDel(t);
-
-	t = StrDrop(s, 52);
+	t = StrTake(s, 0);
 	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 52);
+	munit_assert_true(!strcmp(s->arr, t->arr));
 	StrDel(t);
 
 	StrDel(s);
 
 	s = StrNew("");
 
-	t = StrDrop(s, 1);
+	t = StrTake(s, 1);
 	munit_assert_true(!strcmp(s->arr, t->arr));
 	StrDel(t);
 
-	t = StrDrop(s, 4);
+	t = StrTake(s, 4);
 	munit_assert_true(!strcmp(s->arr, t->arr));
 	StrDel(t);
 
-	t = StrDrop(s, 0);
+	t = StrTake(s, 0);
 	munit_assert_true(!strcmp(s->arr, t->arr));
 	StrDel(t);
 
-	t = StrDrop(s, 52);
+	t = StrTake(s, 52);
 	munit_assert_true(!strcmp(s->arr, t->arr));
 	StrDel(t);
+
+	return MUNIT_OK;
+}
+
+int IsAscii(unsigned int c) { return c < 0x80; }
+int IsFourBytes(unsigned int c) { return c >= 0x110000; }
+int IsNotFourBytes(unsigned int c) { return !IsFourBytes(c); }
+
+MunitResult TestTakeWhile(const MunitParameter params[], void* data) {
+	Str* s = StrNew("Hellô ẃöŗłd‼️");
+	Str* t;
+	
+	t = StrTakeWhile(s, IsAscii);
+	munit_assert_true(!strcmp("Hell", t->arr));
+	StrDel(t);
+	
+	t = StrTakeWhile(s, IsFourBytes);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+	
+	t = StrTakeWhile(s, IsNotFourBytes);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	StrDel(s);
 
 	return MUNIT_OK;
 }
@@ -473,6 +500,7 @@ MunitTest tests[] = {
 	{ "/StrSlice", TestSlice, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrTake", TestTake, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrDrop", TestDrop, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrTakeWhile", TestTakeWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAdd*", TestAdd, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };

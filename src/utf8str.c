@@ -167,13 +167,12 @@ Str* StrCopy(const Str* s) {
  * slice. */
 Str* StrSlice(const Str* s, size_t first, size_t last) {
 	Str* t = StrNew(0);
+	if (!t) return 0;
 	const char* cs = s->arr;
 	unsigned int c;
 	size_t i;
 
 	if (first <= last && last < s->length) {
-		if (!t) return 0;
-		
 		for (i = 0; i < last; ++i) {
 			c = UTF8At(cs);
 			if (c == -1) return 0;
@@ -218,6 +217,22 @@ Str* StrDrop(const Str* s, size_t n) {
 	else return StrNew(0);
 }
 
+/* Create a new Str that returns the longest præfix of s such that for each
+ * Unicode character c in the præfix, p(c) != 0.
+ * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
+ * præfix. */
+Str* StrTakeWhile(const Str* s, int (*p)(unsigned int)) {
+	Str* t = StrNew(0);
+	if (!t) return 0;
+	const char* cs = s->arr;
+	unsigned int c;
+	while (cs < s->arr + s->size && (c = UTF8At(cs)) != -1 && p(c)) {
+		cs += UTF8Size(c);
+		StrAddChar(t, c);
+	}
+	if (c == -1) return 0;
+	return t;
+}
 
 /* Prærequisites: c is a valid Unicode code point && c > 0.
  * Adds Unicode character c to the end of Str s.
