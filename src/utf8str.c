@@ -327,3 +327,27 @@ int StrAdd(Str* s, const Str* t) {
 	return 1;
 }
 
+/* If n < StrLength(s), remove n characters from the end of s; otherwise, set s
+ * to an empty string.
+ * Returns 1 on success, otherwise 0. */
+int StrTrim(Str* s, size_t n) {
+	if (n >= s->length) {
+		s->length = 0;
+		s->size = 1;
+		s->arr[0] = 0;
+		return 1;
+	}
+
+	const char* cs = &(s->arr[s->size]);
+	size_t i;
+	for (i = 0; i < n; ++i) {
+		size_t size = UTF8Size(UTF8Before(cs));
+		cs -= size;
+		if (!size) return 0;
+		--s->length;
+		s->size -= size;
+	}
+	s->arr[s->size - 1] = 0;
+	return 1;
+}
+

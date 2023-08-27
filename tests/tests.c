@@ -544,6 +544,54 @@ MunitResult TestAdd(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestTrim(const MunitParameter params[], void* data) {
+	int ret;
+	Str* s = StrNew("printf(\"ə\");\n");
+	munit_assert_not_null(s);
+	munit_assert_size(s->length, ==, 13);
+	munit_assert_size(s->size, ==, 15);
+	munit_assert_size(s->cap, >=, 15);
+
+	ret = StrTrim(s, 2);
+	munit_assert_int(ret, ==, 1);
+	munit_assert_size(s->length, ==, 11);
+	munit_assert_size(s->size, ==, 13);
+	munit_assert_size(s->cap, >=, 13);
+	munit_assert_true(!strcmp("printf(\"ə\")", s->arr));
+
+	ret = StrTrim(s, 0);
+	munit_assert_int(ret, ==, 1);
+	munit_assert_size(s->length, ==, 11);
+	munit_assert_size(s->size, ==, 13);
+	munit_assert_size(s->cap, >=, 13);
+	munit_assert_true(!strcmp("printf(\"ə\")", s->arr));
+
+	ret = StrTrim(s, 5);
+	munit_assert_int(ret, ==, 1);
+	munit_assert_size(s->length, ==, 6);
+	munit_assert_size(s->size, ==, 7);
+	munit_assert_size(s->cap, >=, 7);
+	munit_assert_true(!strcmp("printf", s->arr));
+
+	ret = StrTrim(s, 100);
+	munit_assert_int(ret, ==, 1);
+	munit_assert_size(s->length, ==, 0);
+	munit_assert_size(s->size, ==, 1);
+	munit_assert_size(s->cap, >=, 1);
+	munit_assert_true(!strcmp("", s->arr));
+
+	ret = StrTrim(s, 5);
+	munit_assert_int(ret, ==, 1);
+	munit_assert_size(s->length, ==, 0);
+	munit_assert_size(s->size, ==, 1);
+	munit_assert_size(s->cap, >=, 1);
+	munit_assert_true(!strcmp("", s->arr));
+
+	StrDel(s);
+
+	return MUNIT_OK;
+}
+
 MunitTest tests[] = {
 	{ "/StrNew", TestNew, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrNewSetCap", TestNewSetCap, NULL, NULL, MUNIT_TEST_OPTION_NONE,
@@ -560,6 +608,7 @@ MunitTest tests[] = {
 	{ "/StrTakeWhile", TestTakeWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrDropWhile", TestDropWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAdd*", TestAdd, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrTrim", TestTrim, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };
 

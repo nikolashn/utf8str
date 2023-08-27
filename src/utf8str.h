@@ -39,6 +39,7 @@ Str* StrDropWhile(const Str* s, int (*p)(unsigned int));
 int StrAddChar(Str* s, unsigned int c);
 int StrAddChars(Str* s, const char* cs);
 int StrAdd(Str* s, const Str* t);
+int StrTrim(Str* s, size_t n);
 
 /* TODO: intersperse, contains, filter, elemIndex, delAt, replace, break,
  * toUpper, toLower, map, reverse, cmp, startsWith, endsWith */
