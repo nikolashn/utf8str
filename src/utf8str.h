@@ -30,6 +30,7 @@ unsigned int StrFirst(const Str* s);
 unsigned int StrLast(const Str* s);
 Str* StrCopy(const Str* s);
 Str* StrSlice(const Str* s, size_t first, size_t last);
+Str* StrTake(const Str* s, size_t n);
 
 /* Mutating functions */
 int StrAddChar(Str* s, unsigned int c);

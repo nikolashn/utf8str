@@ -243,6 +243,49 @@ MunitResult TestSlice(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestTake(const MunitParameter params[], void* data) {
+	Str* s = StrNew("🌶🐎😆😈😈😈");
+	Str* t;
+
+	t = StrTake(s, 1);
+	munit_assert_true(!strcmp("🌶", t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 4);
+	munit_assert_true(!strcmp("🌶🐎😆😈", t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 0);
+	munit_assert_true(!strcmp("", t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 52);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	StrDel(s);
+
+	s = StrNew("");
+
+	t = StrTake(s, 1);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 4);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 0);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	t = StrTake(s, 52);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+	StrDel(t);
+
+	return MUNIT_OK;
+}
+
 MunitResult TestAdd(const MunitParameter params[], void* data) {
 	int ret;
 	Str* s = StrNew(0);
@@ -385,6 +428,7 @@ MunitTest tests[] = {
 	{ "/StrLast", TestFirst, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrCopy", TestCopy, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrSlice", TestSlice, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrTake", TestTake, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAdd*", TestAdd, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };

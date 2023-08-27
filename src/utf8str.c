@@ -200,6 +200,15 @@ Str* StrSlice(const Str* s, size_t first, size_t last) {
 	return t;
 }
 
+/* Create a new Str: if n < StrLength(s), the præfix of s of length n;
+ * otherwise, a copy of s. 
+ * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
+ * præfix. */
+Str* StrTake(const Str* s, size_t n) {
+	if (n < s->length) return StrSlice(s, 0, n);
+	else return StrCopy(s);
+}
+
 /* Prærequisites: c is a valid Unicode code point && c > 0.
  * Adds Unicode character c to the end of Str s.
  * Returns 1 on success, otherwise 0. */
