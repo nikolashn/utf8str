@@ -17,6 +17,13 @@ struct Str {
 
 typedef struct Str Str;
 
+struct StrIter {
+	Str* str;
+	const char* cs;
+};
+
+typedef struct StrIter StrIter;
+
 /* Creation and deletion */
 Str* StrNew(const char* cs);
 Str* StrNewSetCap(size_t initCap);
@@ -40,6 +47,12 @@ int StrAddChar(Str* s, unsigned int c);
 int StrAddChars(Str* s, const char* cs);
 int StrAdd(Str* s, const Str* t);
 int StrTrim(Str* s, size_t n);
+
+/* Iterator functions */
+StrIter* StrIterNew(Str* s);
+void StrIterDel(StrIter* it);
+int StrIterHasNext(StrIter* it);
+unsigned int StrIterNext(StrIter* it);
 
 /* TODO: intersperse, contains, filter, elemIndex, delAt, replace, break,
  * toUpper, toLower, map, reverse, cmp, startsWith, endsWith */

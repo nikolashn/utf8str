@@ -595,6 +595,34 @@ MunitResult TestTrim(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestIter(const MunitParameter params[], void* data) {
+	Str* s = StrNew("Tokyo Metropolis (東京都, Tōkyō-to)");
+	StrIter* it = StrIterNew(s);
+	munit_assert_not_null(it);
+	munit_assert_ptr(it->str, ==, s);
+	munit_assert_ptr(it->cs, ==, s->arr);
+
+	/* inefficient string reversal */
+	Str* t = StrNew(0);
+	while (StrIterHasNext(it)) {
+		unsigned int c = StrIterNext(it);
+		munit_assert_uint(c, !=, -1);
+		munit_assert_uint(c, !=, 0);
+
+		Str* r = StrNew(0);
+		StrAddChar(r, c);
+		StrAdd(r, t);
+		StrDel(t);
+		t = r;
+	}
+	munit_assert_true(!strcmp(")ot-ōykōT ,都京東( siloporteM oykoT", t->arr));
+
+	StrIterDel(it);
+	StrDel(s);
+
+	return MUNIT_OK;
+}
+
 MunitTest tests[] = {
 	{ "/StrNew", TestNew, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrNewSetCap", TestNewSetCap, NULL, NULL, MUNIT_TEST_OPTION_NONE,
@@ -612,6 +640,7 @@ MunitTest tests[] = {
 	{ "/StrDropWhile", TestDropWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAdd*", TestAdd, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrTrim", TestTrim, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrIter*", TestIter, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };
 

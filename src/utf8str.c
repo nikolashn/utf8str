@@ -351,3 +351,34 @@ int StrTrim(Str* s, size_t n) {
 	return 1;
 }
 
+/* Create a new string iterator from a string s.
+ * Returns a pointer to the string iterator if successful, otherwise 0. */
+StrIter* StrIterNew(Str* s) {
+	if (!s) return 0;
+	StrIter* it = malloc(sizeof(*it));
+	if (!it) return 0;
+	it->str = s;
+	it->cs = s->arr;
+	return it;
+}
+
+/* Free a string iterator (doesn't free the underlying Str). */
+void StrIterDel(StrIter* it) { free(it); }
+
+/* Returns 1 if there are more characters left to be iterated over in the
+ * underlying string, otherwise 0. */
+int StrIterHasNext(StrIter* it) {
+	return it->cs < it->str->arr + it->str->size - 1;
+}
+
+/* If there are more characters to be iterated over and the next character is
+ * valid, returns the next character, then increments the iterator; otherwise,
+ * if there are no more characters to be iterated over, returns 0; otherwise,
+ * returns -1. */
+unsigned int StrIterNext(StrIter* it) {
+	if (!StrIterHasNext(it)) return 0;
+	unsigned int c = UTF8At(it->cs);
+	if (c != -1) it->cs += UTF8Size(c);
+	return c;
+}
+
