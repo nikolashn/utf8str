@@ -372,11 +372,11 @@ MunitResult TestTakeWhile(const MunitParameter params[], void* data) {
 }
 
 MunitResult TestDropWhile(const MunitParameter params[], void* data) {
-	Str* s = StrNew("Hellô ẃöŗłd‼️");
+	Str* s = StrNew("Hellô ẃöŗłd‼");
 	Str* t;
 	
 	t = StrDropWhile(s, IsAscii);
-	munit_assert_true(!strcmp("ô ẃöŗłd‼️", t->arr));
+	munit_assert_true(!strcmp("ô ẃöŗłd‼", t->arr));
 	munit_assert_size(t->length, ==, 8);
 	StrDel(t);
 	
@@ -558,6 +558,7 @@ MunitTest tests[] = {
 	{ "/StrTake", TestTake, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrDrop", TestDrop, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrTakeWhile", TestTakeWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrDropWhile", TestDropWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAdd*", TestAdd, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };

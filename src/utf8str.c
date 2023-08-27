@@ -226,7 +226,7 @@ Str* StrTakeWhile(const Str* s, int (*p)(unsigned int)) {
 	if (!t) return 0;
 	const char* cs = s->arr;
 	unsigned int c;
-	while (cs < s->arr + s->size && (c = UTF8At(cs)) != -1 && p(c)) {
+	while (cs < &(s->arr[s->size]) && (c = UTF8At(cs)) != -1 && p(c)) {
 		cs += UTF8Size(c);
 		StrAddChar(t, c);
 	}
@@ -244,12 +244,12 @@ Str* StrDropWhile(const Str* s, int (*p)(unsigned int)) {
 
 	const char* cs = s->arr;
 	unsigned int c;
-	size_t length = 0;
-	while (cs < s->arr + s->size && (c = UTF8At(cs)) != -1 && p(c)) {
+	size_t length = s->length;
+	while (cs < &(s->arr[s->size]) && (c = UTF8At(cs)) != -1 && p(c)) {
 		cs += UTF8Size(c);
-		++length;
+		--length;
 	}
-	if (cs >= s->arr + s->size) return t;
+	if (cs >= &(s->arr[s->size])) return t;
 	if (c == -1) return 0;
 
 	size_t size = s->arr + s->size - cs;
