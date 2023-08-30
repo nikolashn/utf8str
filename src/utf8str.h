@@ -25,38 +25,36 @@ struct StrIter {
 typedef struct StrIter StrIter;
 
 /* Creation and deletion */
-Str* StrNew(const char* cs);
-Str* StrNewSetCap(size_t initCap);
+Str* StrNew(const char* const cs);
+Str* StrNewSetCap(const size_t initCap);
 void StrDel(Str* s);
 
 /* Non-mutating functions */
-int StrIsNull(const Str* s);
-int StrEqual(const Str* s, const Str* t);
-size_t StrLength(const Str* s);
-size_t StrFindChar(const Str* s, unsigned int c);
-unsigned int StrAt(const Str* s, size_t index);
-unsigned int StrFirst(const Str* s);
-unsigned int StrLast(const Str* s);
-Str* StrCopy(const Str* s);
-Str* StrSlice(const Str* s, size_t first, size_t last);
-Str* StrTake(const Str* s, size_t n);
-Str* StrDrop(const Str* s, size_t n);
-Str* StrTakeWhile(const Str* s, int (*p)(unsigned int));
-Str* StrDropWhile(const Str* s, int (*p)(unsigned int));
-Str* StrReverse(const Str* s);
+int StrIsNull(const Str* const s);
+int StrEqual(const Str* const s, const Str* const t);
+size_t StrLength(const Str* const s);
+size_t StrFindChar(const Str* const s, const unsigned int c);
+unsigned int StrAt(const Str* const s, const size_t index);
+unsigned int StrFirst(const Str* const s);
+unsigned int StrLast(const Str* const s);
+Str* StrCopy(const Str* const s);
+Str* StrSlice(const Str* const s, const size_t first, const size_t last);
+Str* StrTake(const Str* const s, const size_t n);
+Str* StrDrop(const Str* const s, const size_t n);
+Str* StrTakeWhile(const Str* const s, int (*p)(unsigned int));
+Str* StrDropWhile(const Str* const s, int (*p)(unsigned int));
+Str* StrReverse(const Str* const s);
 
 /* Mutating functions */
-int StrAddChar(Str* s, unsigned int c);
-int StrAddChars(Str* s, const char* cs);
-int StrAdd(Str* s, const Str* t);
-int StrTrim(Str* s, size_t n);
+int StrAddChar(Str* const s, const unsigned int c);
+int StrAddChars(Str* const s, const char* cs);
+int StrAdd(Str* const s, const Str* const t);
+int StrTrim(Str* const s, size_t n);
 
 /* Iterator functions */
-StrIter* StrIterNew(const Str* s);
+StrIter* StrIterNew(const Str* const s);
 void StrIterDel(StrIter* it);
-int StrIterHasNext(StrIter* it);
-unsigned int StrIterNext(StrIter* it);
-
-/* TODO: startsWith, endsWith */
+int StrIterHasNext(const StrIter* const it);
+unsigned int StrIterNext(StrIter* const it);
 
 #endif
