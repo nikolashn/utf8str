@@ -96,7 +96,7 @@ Str* StrNewSetCap(const size_t initCap) {
 }
 
 /* Free the memory underlying s and then s itself. */
-void StrDel(Str* s) {
+void StrDel(Str* const s) {
 	free(s->arr);
 	free(s);
 }

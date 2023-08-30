@@ -27,7 +27,7 @@ typedef struct StrIter StrIter;
 /* Creation and deletion */
 Str* StrNew(const char* const cs);
 Str* StrNewSetCap(const size_t initCap);
-void StrDel(Str* s);
+void StrDel(Str* const s);
 
 /* Non-mutating functions */
 int StrIsNull(const Str* const s);
