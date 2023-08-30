@@ -32,6 +32,7 @@ void StrDel(Str* const s);
 /* Non-mutating functions */
 int StrIsNull(const Str* const s);
 int StrEqual(const Str* const s, const Str* const t);
+int StrStartsWith(const Str* const s, const Str* const t);
 size_t StrLength(const Str* const s);
 size_t StrFindChar(const Str* const s, const unsigned int c);
 unsigned int StrAt(const Str* const s, const size_t index);

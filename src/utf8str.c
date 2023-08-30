@@ -117,6 +117,29 @@ int StrEqual(const Str* const s, const Str* const t) {
 	return 1;
 }
 
+/* Returns 1 if the string s has t as a præfix, 0 otherwise. */
+int StrStartsWith(const Str* const s, const Str* const t) {
+	if (t->length > s->length || t->size > s->size)
+		return 0;
+
+	StrIter* sit = StrIterNew(s);
+	if (!sit) return 0;
+	StrIter* tit = StrIterNew(t);
+	if (!tit) return 0;
+
+	while (StrIterHasNext(tit)) {
+		const unsigned int c = StrIterNext(sit);
+		const unsigned int d = StrIterNext(tit);
+		if (c == -1 || d == -1 || c != d) {
+			StrIterDel(tit); StrIterDel(sit); return 0;
+		}
+	}
+
+	StrIterDel(tit);
+	StrIterDel(sit);
+	return 1;
+}
+
 /* Returns the amount of UTF-8 characters in s. */
 size_t StrLength(const Str* const s) { return s->length; }
 

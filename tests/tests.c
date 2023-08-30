@@ -153,6 +153,52 @@ MunitResult TestLength(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestStartsWith(const MunitParameter params[], void* data) {
+	Str* s = StrNew("東京都, Tōkyō-to");
+	Str* t;
+
+	/* string that is too long to be a præfix */
+	t = StrNew("東京都東京都東京都東京都東京都東京都");
+	munit_assert_uint(StrStartsWith(s, t), ==, 0);
+	StrDel(t);
+
+	/* correct non-trivial præfix */
+	t = StrNew("東京都");
+	munit_assert_uint(StrStartsWith(s, t), ==, 1);
+	StrDel(t);
+
+	/* trivial præfix */
+	t = StrNew(0);
+	munit_assert_uint(StrStartsWith(s, t), ==, 1);
+	StrDel(t);
+
+	/* non præfix */
+	t = StrNew("I 💖 Tokyo!!!");
+	munit_assert_uint(StrStartsWith(s, t), ==, 0);
+	StrDel(t);
+
+	/* a non-trivial præfix of the string is a præfix, but not the string */
+	t = StrNew("東京人");
+	munit_assert_uint(StrStartsWith(s, t), ==, 0);
+	StrDel(t);
+
+	StrDel(s);
+
+	s = StrNew(0);
+
+	/* non-null string */
+	t = StrNew("Edo.");
+	munit_assert_uint(StrStartsWith(s, t), ==, 0);
+	StrDel(t);
+
+	/* null string */
+	t = StrNew(0);
+	munit_assert_uint(StrStartsWith(s, t), ==, 1);
+	StrDel(t);
+
+	return MUNIT_OK;
+}
+
 MunitResult TestFindChar(const MunitParameter params[], void* data) {
 	Str* s;
 
@@ -734,6 +780,7 @@ MunitTest tests[] = {
 		paramsNewSetCap },
 	{ "/StrIsNull", TestIsNull, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrEqual", TestEqual, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrStartsWith", TestLength, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrLength", TestLength, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrFindChar", TestFindChar, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAt", TestAt, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
