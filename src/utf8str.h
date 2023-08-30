@@ -18,7 +18,7 @@ struct Str {
 typedef struct Str Str;
 
 struct StrIter {
-	Str* str;
+	const Str* str;
 	const char* cs;
 };
 
@@ -32,6 +32,7 @@ void StrDel(Str* s);
 /* Non-mutating functions */
 int StrIsNull(const Str* s);
 size_t StrLength(const Str* s);
+size_t StrFindChar(const Str* s, unsigned int c);
 unsigned int StrAt(const Str* s, size_t index);
 unsigned int StrFirst(const Str* s);
 unsigned int StrLast(const Str* s);
@@ -49,12 +50,12 @@ int StrAdd(Str* s, const Str* t);
 int StrTrim(Str* s, size_t n);
 
 /* Iterator functions */
-StrIter* StrIterNew(Str* s);
+StrIter* StrIterNew(const Str* s);
 void StrIterDel(StrIter* it);
 int StrIterHasNext(StrIter* it);
 unsigned int StrIterNext(StrIter* it);
 
-/* TODO: intersperse, contains, filter, elemIndex, delAt, replace, break,
+/* TODO: contains, filter, elemIndex, delAt, replace, break,
  * toUpper, toLower, map, reverse, cmp, startsWith, endsWith */
 
 #endif

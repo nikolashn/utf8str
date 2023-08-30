@@ -108,6 +108,24 @@ int StrIsNull(const Str* s) { return s->length == 0; }
 /* Returns the amount of UTF-8 characters in s. */
 size_t StrLength(const Str* s) { return s->length; }
 
+/* Returns the first index of the character c if found, otherwise returns -1. */
+size_t StrFindChar(const Str* s, unsigned int c) {
+	StrIter* it = StrIterNew(s);
+	unsigned int d = 0;
+	size_t index = -1;
+	while (StrIterHasNext(it) && d != c) {
+		d = StrIterNext(it);
+		if (d == -1) { 
+			StrIterDel(it);
+			return -1;
+		}
+		++index;
+	}
+	StrIterDel(it);
+	if (d == c) return index;
+	return -1;
+}
+
 /* Prærequisites: index < StrLength(s).
  * Returns the code point of the index-th (starting from 0) Unicode character of
  * s if index is within range and valid UTF-8 character exists at that index,
@@ -353,7 +371,7 @@ int StrTrim(Str* s, size_t n) {
 
 /* Create a new string iterator from a string s.
  * Returns a pointer to the string iterator if successful, otherwise 0. */
-StrIter* StrIterNew(Str* s) {
+StrIter* StrIterNew(const Str* s) {
 	if (!s) return 0;
 	StrIter* it = malloc(sizeof(*it));
 	if (!it) return 0;

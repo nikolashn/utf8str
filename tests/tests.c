@@ -101,6 +101,30 @@ MunitResult TestLength(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestFindChar(const MunitParameter params[], void* data) {
+	Str* s;
+
+	s = StrNew("A: x = y ∧ x ≠ 0 → y ≠ 0");
+	munit_assert_size(StrFindChar(s, L'≠'), ==, 13);
+	munit_assert_size(StrFindChar(s, L':'), ==, 1);
+	munit_assert_size(StrFindChar(s, L'C'), ==, -1);
+	munit_assert_size(StrFindChar(s, L'A'), ==, 0);
+	munit_assert_size(StrFindChar(s, L'च'), ==, -1);
+	munit_assert_size(StrFindChar(s, 0), ==, -1);
+	StrDel(s);
+
+	s = StrNew(0);
+	munit_assert_size(StrFindChar(s, L'≠'), ==, -1);
+	munit_assert_size(StrFindChar(s, L':'), ==, -1);
+	munit_assert_size(StrFindChar(s, L'C'), ==, -1);
+	munit_assert_size(StrFindChar(s, L'A'), ==, -1);
+	munit_assert_size(StrFindChar(s, L'च'), ==, -1);
+	munit_assert_size(StrFindChar(s, 0), ==, -1);
+	StrDel(s);
+
+	return MUNIT_OK;
+}
+
 MunitResult TestAt(const MunitParameter params[], void* data) {
 	Str* s;
 
@@ -629,6 +653,7 @@ MunitTest tests[] = {
 		paramsNewSetCap },
 	{ "/StrIsNull", TestIsNull, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrLength", TestLength, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrFindChar", TestFindChar, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAt", TestAt, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrFirst", TestFirst, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrLast", TestFirst, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
