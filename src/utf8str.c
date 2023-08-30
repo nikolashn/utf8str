@@ -435,20 +435,37 @@ StrIter* StrIterNew(const Str* const s) {
 /* Free a string iterator (doesn't free the underlying Str). */
 void StrIterDel(StrIter* it) { free(it); }
 
-/* Returns 1 if there are more characters left to be iterated over in the
- * underlying string, otherwise 0. */
+/* Returns 1 if there are more characters left to be iterated over forwards in
+ * the underlying string, otherwise 0. */
 int StrIterHasNext(const StrIter* const it) {
 	return it->cs < it->str->arr + it->str->size - 1;
 }
 
-/* If there are more characters to be iterated over and the next character is
- * valid, returns the next character, then increments the iterator; otherwise,
- * if there are no more characters to be iterated over, returns 0; otherwise,
- * returns -1. */
+/* If there are more characters to be iterated over forwards and the next
+ * character is valid, returns the next character, then increments the iterator;
+ * otherwise, if there are no more characters to be iterated over forwards,
+ * returns 0; otherwise, returns -1. */
 unsigned int StrIterNext(StrIter* const it) {
 	if (!StrIterHasNext(it)) return 0;
 	const unsigned int c = UTF8At(it->cs);
 	if (c != -1) it->cs += UTF8Size(c);
+	return c;
+}
+
+/* Returns 1 if there have are more characters left to be iterated over
+ * backwards in the underlying string, otherwise 0. */
+int StrIterHasPrev(const StrIter* const it) {
+	return it->cs > it->str->arr;
+}
+
+/* If there are more characters to be iterated over backwards and the next
+ * character is valid, returns the next character, then increments the iterator;
+ * otherwise, if there are no more characters to be iterated over backwards,
+ * returns 0; otherwise, returns -1. */
+unsigned int StrIterPrev(StrIter* const it) {
+	if (!StrIterHasPrev(it)) return 0;
+	const unsigned int c = UTF8Before(it->cs);
+	if (c != -1) it->cs -= UTF8Size(c);
 	return c;
 }
 

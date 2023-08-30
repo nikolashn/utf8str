@@ -57,5 +57,7 @@ StrIter* StrIterNew(const Str* const s);
 void StrIterDel(StrIter* it);
 int StrIterHasNext(const StrIter* const it);
 unsigned int StrIterNext(StrIter* const it);
+int StrIterHasPrev(const StrIter* const it);
+unsigned int StrIterPrev(StrIter* const it);
 
 #endif

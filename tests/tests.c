@@ -768,6 +768,19 @@ MunitResult TestIter(const MunitParameter params[], void* data) {
 	}
 	munit_assert_true(!strcmp(")ot-ōykōT ,都京東( siloporteM oykoT", t->arr));
 
+	StrDel(t);
+
+	/* more efficient string reversal */
+	t = StrNew(0);
+	while (StrIterHasPrev(it)) {
+		unsigned int c = StrIterPrev(it);
+		munit_assert_uint(c, !=, -1);
+		munit_assert_uint(c, !=, 0);
+		StrAddChar(t, c);
+	}
+	munit_assert_true(!strcmp(")ot-ōykōT ,都京東( siloporteM oykoT", t->arr));
+
+	StrDel(t);
 	StrIterDel(it);
 	StrDel(s);
 
