@@ -31,6 +31,7 @@ void StrDel(Str* s);
 
 /* Non-mutating functions */
 int StrIsNull(const Str* s);
+int StrEqual(const Str* s, const Str* t);
 size_t StrLength(const Str* s);
 size_t StrFindChar(const Str* s, unsigned int c);
 unsigned int StrAt(const Str* s, size_t index);
@@ -56,6 +57,6 @@ void StrIterDel(StrIter* it);
 int StrIterHasNext(StrIter* it);
 unsigned int StrIterNext(StrIter* it);
 
-/* TODO: reverse, cmp, startsWith, endsWith */
+/* TODO: startsWith, endsWith */
 
 #endif

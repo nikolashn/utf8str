@@ -105,6 +105,19 @@ void StrDel(Str* s) {
 /* Returns 1 if s contains no characters, otherwise returns 0. */
 int StrIsNull(const Str* s) { return s->length == 0; }
 
+/* Returns 1 if the strings s and t are equal, 0 otherwise. */
+int StrEqual(const Str* s, const Str* t) {
+	if (s->length != t->length || s->size != t->size)
+		return 0;
+	/* as every Unicode string has a unique representation in terms of an array of
+	 * bytes, the following works */
+	size_t i;
+	for (i = 0; i < s->size; ++i) {
+		if (s->arr[i] != t->arr[i]) return 0;
+	}
+	return 1;
+}
+
 /* Returns the amount of UTF-8 characters in s. */
 size_t StrLength(const Str* s) { return s->length; }
 

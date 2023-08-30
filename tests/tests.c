@@ -81,6 +81,58 @@ MunitResult TestIsNull(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestEqual(const MunitParameter params[], void* data) {
+	Str* s; Str* t;
+
+	/* same string */
+	s = StrNew("Hello!");
+	t = StrNew("Hello!");
+	munit_assert_uint(StrEqual(s, t), ==, 1);
+	StrDel(s); StrDel(t);
+
+	/* different length, same size */
+	s = StrNew("Élló");
+	t = StrNew("Hello!");
+	munit_assert_size(s->length, !=, t->length);
+	munit_assert_size(s->size, ==, t->size);
+	munit_assert_uint(StrEqual(s, t), ==, 0);
+	StrDel(s); StrDel(t);
+
+	/* same length, different size */
+	s = StrNew("Élló");
+	t = StrNew("Ello");
+	munit_assert_uint(StrEqual(s, t), ==, 0);
+	munit_assert_size(s->length, ==, t->length);
+	munit_assert_size(s->size, !=, t->size);
+	StrDel(s); StrDel(t);
+
+	/* non-trivially same præfix */
+	s = StrNew("Hello");
+	t = StrNew("Hello world!");
+	munit_assert_uint(StrEqual(s, t), ==, 0);
+	StrDel(s); StrDel(t);
+
+	/* completely different */
+	s = StrNew("Hello");
+	t = StrNew("ሰላም");
+	munit_assert_uint(StrEqual(s, t), ==, 0);
+	StrDel(s); StrDel(t);
+
+	/* one null, other non-null */
+	s = StrNew(0);
+	t = StrNew("Helloóòǫöôõōǒŏø.");
+	munit_assert_uint(StrEqual(s, t), ==, 0);
+	StrDel(s); StrDel(t);
+
+	/* both null */
+	s = StrNew(0);
+	t = StrNew(0);
+	munit_assert_uint(StrEqual(s, t), ==, 1);
+	StrDel(s); StrDel(t);
+
+	return MUNIT_OK;
+}
+
 MunitResult TestLength(const MunitParameter params[], void* data) {
 	Str* s;
 
@@ -681,6 +733,7 @@ MunitTest tests[] = {
 	{ "/StrNewSetCap", TestNewSetCap, NULL, NULL, MUNIT_TEST_OPTION_NONE,
 		paramsNewSetCap },
 	{ "/StrIsNull", TestIsNull, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrEqual", TestEqual, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrLength", TestLength, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrFindChar", TestFindChar, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAt", TestAt, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
