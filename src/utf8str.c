@@ -140,6 +140,29 @@ int StrStartsWith(const Str* const s, const Str* const t) {
 	return 1;
 }
 
+/* Returns 1 if the string s has t as a postfix, 0 otherwise. */
+int StrEndsWith(const Str* const s, const Str* const t) {
+	if (t->length > s->length || t->size > s->size)
+		return 0;
+
+	StrIter* sit = StrIterNew(s);
+	if (!sit) return 0;
+	StrIter* tit = StrIterNew(t);
+	if (!tit) return 0;
+
+	while (StrIterHasPrev(tit)) {
+		const unsigned int c = StrIterPrev(sit);
+		const unsigned int d = StrIterPrev(tit);
+		if (c == -1 || d == -1 || c != d) {
+			StrIterDel(tit); StrIterDel(sit); return 0;
+		}
+	}
+
+	StrIterDel(tit);
+	StrIterDel(sit);
+	return 1;
+}
+
 /* Returns the amount of UTF-8 characters in s. */
 size_t StrLength(const Str* const s) { return s->length; }
 
