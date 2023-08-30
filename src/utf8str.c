@@ -111,6 +111,7 @@ size_t StrLength(const Str* s) { return s->length; }
 /* Returns the first index of the character c if found, otherwise returns -1. */
 size_t StrFindChar(const Str* s, unsigned int c) {
 	StrIter* it = StrIterNew(s);
+	if (!it) return 0;
 	unsigned int d = 0;
 	size_t index = -1;
 	while (StrIterHasNext(it) && d != c) {
@@ -193,7 +194,7 @@ Str* StrSlice(const Str* s, size_t first, size_t last) {
 	if (first <= last && last < s->length) {
 		for (i = 0; i < last; ++i) {
 			c = UTF8At(cs);
-			if (c == -1) return 0;
+			if (c == -1) { StrDel(t); return 0; }
 			cs += UTF8Size(c);
 			if (i >= first) StrAddChar(t, c);
 		}
@@ -201,7 +202,7 @@ Str* StrSlice(const Str* s, size_t first, size_t last) {
 	else if (first <= last && first <= s->length) {
 		for (i = 0; i < first; ++i) {
 			c = UTF8At(cs);
-			if (c == -1) return 0;
+			if (c == -1) { StrDel(t); return 0; }
 			cs += UTF8Size(c);
 		}
 
@@ -248,7 +249,7 @@ Str* StrTakeWhile(const Str* s, int (*p)(unsigned int)) {
 		cs += UTF8Size(c);
 		StrAddChar(t, c);
 	}
-	if (c == -1) return 0;
+	if (c == -1) { StrDel(t); return 0; }
 	return t;
 }
 
@@ -268,7 +269,7 @@ Str* StrDropWhile(const Str* s, int (*p)(unsigned int)) {
 		--length;
 	}
 	if (cs >= &(s->arr[s->size])) return t;
-	if (c == -1) return 0;
+	if (c == -1) { StrDel(t); return 0; }
 
 	size_t size = s->arr + s->size - cs;
 	t = StrResize(t, size);
@@ -278,6 +279,23 @@ Str* StrDropWhile(const Str* s, int (*p)(unsigned int)) {
 	t->length = length;
 	t->size = size;
 
+	return t;
+}
+
+/* Create a new Str which has the reverse of the characters of s.
+ * Returns 0 if unsuccessful, otherwise a pointer to the new Str containing the
+ * reverse. */
+Str* StrReverse(const Str* s) {
+	Str* t = StrNew(0);
+	if (!t) return 0;
+
+	const char* cs = &(s->arr[s->size]);
+	unsigned int c;
+	while (cs > s->arr && (c = UTF8Before(cs)) != -1) {
+		cs -= UTF8Size(c);
+		StrAddChar(t, c);
+	}
+	if (c == -1) { StrDel(t); return 0; }
 	return t;
 }
 

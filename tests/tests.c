@@ -440,6 +440,35 @@ MunitResult TestDropWhile(const MunitParameter params[], void* data) {
 	return MUNIT_OK;
 }
 
+MunitResult TestReverse(const MunitParameter params[], void* data) {
+	Str* s = StrNew("Tokyo Metropolis (東京都, Tōkyō-to)");
+
+	Str* t = StrReverse(s);
+	munit_assert_not_null(t);
+	munit_assert_size(t->length, ==, s->length);
+	munit_assert_size(t->size, ==, s->size);
+	munit_assert_true(!strcmp(")ot-ōykōT ,都京東( siloporteM oykoT", t->arr));
+
+	Str* u = StrReverse(t);
+	munit_assert_not_null(u);
+	munit_assert_size(u->length, ==, t->length);
+	munit_assert_size(u->size, ==, t->size);
+	munit_assert_true(!strcmp(s->arr, u->arr));
+
+	StrDel(u);
+	StrDel(t);
+	StrDel(s);
+
+	s = StrNew(0);
+	t = StrReverse(s);
+	munit_assert_not_null(t);
+	munit_assert_size(t->length, ==, 0);
+	munit_assert_size(t->size, ==, 1);
+	munit_assert_true(!strcmp(s->arr, t->arr));
+
+	return MUNIT_OK;
+}
+
 MunitResult TestAdd(const MunitParameter params[], void* data) {
 	int ret;
 	Str* s = StrNew(0);
@@ -663,6 +692,7 @@ MunitTest tests[] = {
 	{ "/StrDrop", TestDrop, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrTakeWhile", TestTakeWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrDropWhile", TestDropWhile, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+	{ "/StrReverse", TestReverse, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrAdd*", TestAdd, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrTrim", TestTrim, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
 	{ "/StrIter*", TestIter, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
